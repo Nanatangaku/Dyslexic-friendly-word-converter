@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>讀寫障礙友善字體轉換器 Dyslexic friendly word converter </title>
+    <style>
+        body {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        #output {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            min-height: 100px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        strong {
+            font-weight: 900;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>讀寫障礙友善字體轉換器 Dyslexic friendly word converter </h1>
+    <div class="container">
+        <textarea id="input" placeholder="Input your text..."></textarea>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function escapeHTML(str) {
+            return str.replace(/&/g, '&amp;')
+                     .replace(/</g, '&lt;')
+                     .replace(/>/g, '&gt;')
+                     .replace(/"/g, '&quot;')
+                     .replace(/'/g, '&#039;');
+        }
+
+        function processWord(word) {
+            const escaped = escapeHTML(word);
+            const half = Math.ceil(escaped.length / 2);
+            return `<strong>${escaped.substring(0, half)}</strong>${escaped.substring(half)}`;
+        }
+
+        function processText(text) {
+            return text.split(/(\s+|,)/g)
+                      .map(part => {
+                          if (/(\s+|,)/.test(part)) {
+                              return part;
+                          }
+                          return part ? processWord(part) : '';
+                      })
+                      .join('');
+        }
+
+        document.getElementById('input').addEventListener('input', function(e) {
+            const output = document.getElementById('output');
+            output.innerHTML = processText(e.target.value);
+        });
+    </script>
+</body>
+</html>
